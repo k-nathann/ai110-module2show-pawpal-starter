@@ -29,8 +29,7 @@ Building block brainstorm:
 
 **b. Design changes**
 
-- Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+After creating the class skeleton, I decided to keep the `Scheduler` class separate from `Owner` and `Pet` instead of putting sorting and filtering methods directly inside those classes. This keeps the data objects simpler: `Owner` manages pets, `Pet` manages tasks, and `Scheduler` handles schedule logic. I also included optional filter parameters in `Scheduler.filter_tasks()` so the same method can eventually support filtering by pet name, completion status, or both.
 
 ---
 
