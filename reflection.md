@@ -12,6 +12,21 @@ For the first version of PawPal+, I identified three core actions a user should 
 
 My initial UML design will use four main classes. `Owner` will manage the pet owner's name and list of pets. `Pet` will store each pet's details and care tasks. `Task` will represent one scheduled activity with details like description, time, frequency, and completion status. `Scheduler` will organize tasks across pets so the app can sort them, filter them, and detect possible schedule issues.
 
+Building block brainstorm:
+
+- `Owner`
+  - Attributes: `name`, `pets`
+  - Methods: `add_pet()`, `remove_pet()`, `get_all_tasks()`
+- `Pet`
+  - Attributes: `name`, `species`, `age`, `tasks`
+  - Methods: `add_task()`, `remove_task()`, `get_tasks()`
+- `Task`
+  - Attributes: `description`, `scheduled_time`, `frequency`, `completed`
+  - Methods: `mark_complete()`, `mark_incomplete()`, `is_recurring()`
+- `Scheduler`
+  - Attributes: `owner`
+  - Methods: `sort_by_time()`, `filter_tasks()`, `detect_conflicts()`, `get_today_schedule()`
+
 **b. Design changes**
 
 - Did your design change during implementation?
