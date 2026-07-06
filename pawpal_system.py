@@ -13,15 +13,15 @@ class Task:
 
     def mark_complete(self) -> None:
         """Mark the task as complete."""
-        pass
+        self.completed = True
 
     def mark_incomplete(self) -> None:
         """Mark the task as incomplete."""
-        pass
+        self.completed = False
 
     def is_recurring(self) -> bool:
         """Return whether this task repeats."""
-        pass
+        return self.frequency.lower() in ["daily", "weekly"]
 
 
 @dataclass
@@ -35,15 +35,19 @@ class Pet:
 
     def add_task(self, task: Task) -> None:
         """Add a task to this pet."""
-        pass
+        self.tasks.append(task)
 
     def remove_task(self, task_description: str) -> None:
         """Remove a task by description."""
-        pass
+        self.tasks = [
+            task
+            for task in self.tasks
+            if task.description.lower() != task_description.lower()
+        ]
 
     def get_tasks(self) -> list[Task]:
         """Return this pet's tasks."""
-        pass
+        return self.tasks
 
 
 @dataclass
@@ -55,15 +59,18 @@ class Owner:
 
     def add_pet(self, pet: Pet) -> None:
         """Add a pet to this owner."""
-        pass
+        self.pets.append(pet)
 
     def remove_pet(self, pet_name: str) -> None:
         """Remove a pet by name."""
-        pass
+        self.pets = [pet for pet in self.pets if pet.name.lower() != pet_name.lower()]
 
     def get_all_tasks(self) -> list[Task]:
         """Return tasks for all pets."""
-        pass
+        all_tasks = []
+        for pet in self.pets:
+            all_tasks.extend(pet.get_tasks())
+        return all_tasks
 
 
 class Scheduler:
@@ -75,7 +82,7 @@ class Scheduler:
 
     def sort_by_time(self, tasks: list[Task]) -> list[Task]:
         """Sort tasks by scheduled time."""
-        pass
+        return sorted(tasks, key=lambda task: task.scheduled_time)
 
     def filter_tasks(
         self,
@@ -84,12 +91,45 @@ class Scheduler:
         completed: Optional[bool] = None,
     ) -> list[Task]:
         """Filter tasks by pet name or completion status."""
-        pass
+        filtered_tasks = tasks
+
+        if pet_name is not None:
+            matching_pet = None
+            for pet in self.owner.pets:
+                if pet.name.lower() == pet_name.lower():
+                    matching_pet = pet
+                    break
+
+            if matching_pet is None:
+                return []
+
+            filtered_tasks = [
+                task for task in filtered_tasks if task in matching_pet.get_tasks()
+            ]
+
+        if completed is not None:
+            filtered_tasks = [
+                task for task in filtered_tasks if task.completed == completed
+            ]
+
+        return filtered_tasks
 
     def detect_conflicts(self, tasks: list[Task]) -> list[str]:
         """Find possible schedule conflicts."""
-        pass
+        conflicts = []
+        seen_times = {}
+
+        for task in tasks:
+            if task.scheduled_time in seen_times:
+                conflicts.append(
+                    f"Conflict at {task.scheduled_time}: "
+                    f"{seen_times[task.scheduled_time]} and {task.description}"
+                )
+            else:
+                seen_times[task.scheduled_time] = task.description
+
+        return conflicts
 
     def get_today_schedule(self) -> list[Task]:
         """Return today's organized schedule."""
-        pass
+        return self.sort_by_time(self.owner.get_all_tasks())
